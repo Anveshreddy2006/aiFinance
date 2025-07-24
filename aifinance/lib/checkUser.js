@@ -1,38 +1,33 @@
-import { currentUser } from "@clerk/nextjs/server"
-import { db } from "./prisma";
-import { data } from "autoprefixer";
- 
-export  const checkUser = async () => {
-    const user = await currentUser();
+// lib/checkUser.js
+import { currentUser } from '@clerk/nextjs/server';
+import { db } from './prisma';
 
-    if(!user){
-        return null;
-    }
+export const checkUser = async () => {
+  const user = await currentUser();
 
-    try{
-     
-        const loggedInUser =  await db.user.findUnique({
-            where :{
-             clerkUserId: user.id,
-            },
-        });
-        if(loggedInUser){
-            return loggedInUser;
-        }
+  if (!user) return null;
 
-        const name  = `${user.firstName} ${user.lastName}`;
+  try {
+    const existingUser = await db.user.findUnique({
+      where: { clerkUserId: user.id },
+    });
 
-        const newUser = await db.user.create({
-            data:{
-                clerkUserId :user.id,
-                name,
-                imageUrl:user.imageUrl,
-                email :user.emailAddresses[0].emailAddress,
+    if (existingUser) return existingUser;
 
-            }
-        });
-        return newUser;
-    }catch(error){
-           console.log(error.message);
-    }
+    const name = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+
+    const newUser = await db.user.create({
+      data: {
+        clerkUserId: user.id,
+        name,
+        imageUrl: user.imageUrl,
+        email: user.emailAddresses[0].emailAddress,
+      },
+    });
+
+    return newUser;
+  } catch (error) {
+    console.error('Error checking/creating user:', error.message);
+    return null;
+  }
 };
