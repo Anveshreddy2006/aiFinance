@@ -126,33 +126,45 @@ const AccountChart = ({transactions})=>{
                     ? "text-green-500" :"text-red-500"
                  }`}
                 >
-                ${(totals.income-totals.expense).toFixed(2)}</p>
+                ${(totals.income-totals.expense).toFixed(2)}
+              </p>
         </div>
     </div>
+     <div className="h-[300px]">
+
+
   
-     {/*
+     {
          <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          width={500}
-          height={300}
-          data={data}
+        
+          data={filteredData}
           margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
+            top: 10,
+            right: 10,
+            left: 10,
+            bottom: 0,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="pv" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-          <Bar dataKey="uv" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
-        </BarChart>
-      </ResponsiveContainer>*/}
+          <CartesianGrid strokeDasharray="3 3" vertical={false}/>
+          <XAxis dataKey="date" />
+          <YAxis 
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+          tickFormatter={(value) => `$${value}`}/>
 
+           <Tooltip formatter={(value) => [`$${value}`,undefined]}/>
+         
+          <Legend />
+          
+       <Bar dataKey="income" name="Income" fill="#22c33e"  radius={[4,4,0,0]}/>
+           
+
+          <Bar dataKey="expense" name="Expense" fill="#ef4444" radius={[4,4,0,0]}/>
+        </BarChart>
+      </ResponsiveContainer> }
+     </div>
   </CardContent>
   
 </Card>
